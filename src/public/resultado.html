@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultado da API dos Correios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Resultado da API dos Correios</h1>
+  <div id="result"></div>
+
+  <script>
+    function renderResult(data) {
+      const container = document.getElementById('result');
+
+      let html = `<p><strong>Versão:</strong> ${data.versao}</p>`;
+      html += `<p><strong>Quantidade:</strong> ${data.quantidade}</p>`;
+      html += `<p><strong>Tipo de Resultado:</strong> ${data.tipoResultado}</p>`;
+
+      html += '<h2>Objetos:</h2>';
+      html += '<table><thead><tr><th>Código do Objeto</th><th>Mensagem</th></tr></thead><tbody>';
+
+      data.objetos.forEach(objeto => {
+        html += `<tr><td>${objeto.codObjeto}</td><td>${objeto.mensagem}</td></tr>`;
+      });
+
+      html += '</tbody></table>';
+
+      container.innerHTML = html;
+    }
+
+    // Capturar JSON passado como string na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const jsonData = urlParams.get('data');
+
+    if (jsonData) {
+      try {
+        const parsedData = JSON.parse(decodeURIComponent(jsonData));
+        renderResult(parsedData);
+      } catch (error) {
+        document.getElementById('result').innerHTML = '<p style="color: red;">Erro ao processar os dados.</p>';
+      }
+    } else {
+      document.getElementById('result').innerHTML = '<p style="color: red;">Nenhum dado fornecido.</p>';
+    }
+  </script>
+</body>
+</html>
